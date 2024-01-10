@@ -25,6 +25,7 @@ A budget is a purpoted expeding for a time period. The max budget is an amount e
 * Reset a max budget by recalculating the daily subject
 * View past max budgets
 * View individual days of budgets and their expenses
+* View expenses by tag
 * View max budget savings
 
 Similarly, a daily budget is the amount expected to be spent over a single day. This amount can be bigger or smaller than the starting daily budget for a given day according to the previous days expenses. Users may not edit the daily budget in any capacity. It is calculated from the max budget, number of days and current total spent. 
