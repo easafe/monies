@@ -69,21 +69,30 @@ module App =
             Cmd.none
         | SetDaysInput days -> { model with DaysInput = parseInt days }, Cmd.none
 
+    let df o =
+        match o with
+        | Some p -> p.ToString()
+        | None -> ""
+
     let view model =
         match model.Budgets with
         | [] ->
             (VStack() {
                 TextBlock("monies").centerText ()
 
-                MaskedTextBox("Max budget", "$", SetMaxInput).centerText ()
+                Label("Max budget")
+                TextBox(df model.MaxInput, SetMaxInput)
+                Label("Days")
+                TextBox(df model.DaysInput, SetDaysInput)
 
-                Button("Add", Start).centerHorizontal ()
+                Button("Add", Start)
             })
         | b :: bs ->
             (VStack() {
                 TextBlock("monies").centerText ()
 
                 TextBlock("Max budget: " + b.Max.ToString()).centerText ()
+                TextBlock("Days: " + b.Days.ToString()).centerText ()
             })
 
     let app model =
