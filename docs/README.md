@@ -5,7 +5,7 @@ Author: [@easafe](https://github.com/easafe)
 
 ## Overview
 
-monies is an "accounting" tool that works with a max budget divided by a number of days. The goal is to not surpass the resulting daily budget. If the total expenses for a given day is different than the daily budget, such difference is added to the next day's budget and so on and so forth. If at the end of the period the max budget has not been reached the extra money is considered savings.
+_monies_ is an "accounting" tool that works with a max budget divided by a number of days. The goal is to not surpass the resulting daily budget. If the total expenses for a given day is different than the daily budget, such difference is added to the next day's budget and so on and so forth. If at the end of the period the max budget has not been reached the remaining money is considered savings.
 
 Note: max budgets are designed for day to day expenses (like food, going out, transportation). Recurring high fixed costs such as rent or big purchases are better represented in different ways.
 
@@ -31,7 +31,7 @@ A budget is a purported expending for a time period. The max budget is an amount
 * View expenses by tag
 * View max budget savings
 
-Similarly, a daily budget is the amount expected to be spent over a single day. This amount can be bigger or smaller than the starting daily budget for a given day according to the previous days expenses. Users may not edit the daily budget in any capacity. It is calculated from the max budget, number of days and current total spent. 
+Similarly, a daily budget is the amount expected to be spent over a single day. This amount can be bigger or smaller than the starting daily budget for a given day according to the previous days expenses and cannot be edited. Users however may split the daily budget into tags, e.g. a daily budget of 50 may be divided into 15 for food, 5 for transportaion and 30 for other (untagged) expenses.   
 
 ## Expenses
 
