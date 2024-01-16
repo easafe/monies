@@ -20,7 +20,9 @@ That means it is possible to spend 10 per day. If at the first day only 5 is spe
 
 ## Budgets
 
-A budget is a purported expending for a time period. The max budget is an amount expected to be spent over n days. Users may:
+A budget is a purported expending for a time period.
+
+Max budget is an amount expected to be spent over n days. Users may:
 
 * Add any number of max budgets for periods
 * Delete a given max budget
@@ -31,7 +33,10 @@ A budget is a purported expending for a time period. The max budget is an amount
 * View expenses by tag
 * View max budget savings
 
-Similarly, a daily budget is the amount expected to be spent over a single day. This amount can be bigger or smaller than the starting daily budget for a given day according to the previous days expenses and cannot be edited. Users however may split the daily budget into tags, e.g. a daily budget of 50 may be divided into 15 for food, 5 for transportaion and 30 for other (untagged) expenses.   
+Similarly, a daily budget is the amount expected to be spent over a single day. This amount can be bigger or smaller than the starting daily budget for a given day according to the previous days expenses and cannot be edited. Users however may:
+
+* Split the daily budget into tags, e.g. a daily budget of 50 may be divided into 15 for food, 5 for transportaion and 30 for other (untagged) expenses.   
+* Set at what time the daily budget starts (default being midnight)
 
 ## Expenses
 
