@@ -10,29 +10,37 @@ open type Fabulous.Avalonia.View
 module App =
     type Expense =
         { Amount: decimal
-          Tag: string
+          Tag: string Option
           time: DateTime }
 
     type Budget =
         { Max: decimal
           Days: int
-          Start: DateOnly
+          Start: DateTime
+          Remaining: decimal
           Expenses: Expense list }
 
     type Model =
         { Budgets: Budget list
           MaxInput: decimal Option
-          DaysInput: int Option }
+          DaysInput: int Option
+          AmountInput: decimal Option
+          TagInput: string Option }
 
     type Msg =
         | Start
         | SetMaxInput of string
         | SetDaysInput of string
+        | SetAmountInput of string
+        | SetTagInput of string
+        | Spend
 
     let initModel =
         { Budgets = []
           MaxInput = None
-          DaysInput = None }
+          DaysInput = None
+          AmountInput = None
+          TagInput = None }
 
     let init () = initModel, Cmd.none
 
@@ -48,26 +56,67 @@ module App =
         with _ ->
             None
 
+    let addExpense (amount, tag) budgets =
+        match budgets with
+        | [] -> []
+        | b :: udgets ->
+            { b with
+                Expenses =
+                    { Amount = amount
+                      Tag = tag
+                      time = DateTime.Now }
+                    :: b.Expenses }
+            :: udgets
+
+    let remaining budgets =
+        match budgets with
+        | [] -> []
+        | b :: udgets ->
+            let n = (decimal)(DateTime.Now - b.Start).Days + 1m
+            let r = List.sumBy (fun e -> e.Amount) b.Expenses
+            { b with
+                Remaining = b.Max / (decimal)b.Days * n - r }
+             :: udgets
+
     let update msg model =
         match msg with
         | Start ->
             match model.MaxInput, model.DaysInput with
             | Some m, Some d ->
                 { model with
+                    MaxInput = None
+                    DaysInput = None
                     Budgets =
                         { Max = m
                           Days = d
-                          Start = DateOnly.FromDateTime(DateTime.Now)
+                          Remaining = m / (decimal)d
+                          Start = DateTime.Now
                           Expenses = [] }
-                        :: model.Budgets },
+                        :: model.Budgets }
+                    ,
                 Cmd.none
             | _, _ -> model, Cmd.none
+
+        | Spend ->
+            match model.AmountInput with
+            | Some a ->
+                { model with
+                    Budgets =  addExpense (a, model.TagInput) model.Budgets |> remaining
+                    AmountInput = None
+                    TagInput = None },
+                Cmd.none
+            | None -> model, Cmd.none
 
         | SetMaxInput max ->
             { model with
                 MaxInput = parseDecimal max },
             Cmd.none
         | SetDaysInput days -> { model with DaysInput = parseInt days }, Cmd.none
+        | SetAmountInput amount ->
+            { model with
+                AmountInput = parseDecimal amount },
+            Cmd.none
+        | SetTagInput tag -> { model with TagInput = Some tag }, Cmd.none
 
     let df o =
         match o with
@@ -93,6 +142,14 @@ module App =
 
                 TextBlock("Max budget: " + b.Max.ToString()).centerText ()
                 TextBlock("Days: " + b.Days.ToString()).centerText ()
+                TextBlock("Todays' budget " + b.Remaining.ToString()).centerText ()
+
+                Label("Amount")
+                TextBox(df model.AmountInput, SetAmountInput)
+                Label("Tag")
+                TextBox(df model.TagInput, SetTagInput)
+                Button("Add", Spend)
+
             })
 
     let app model =
