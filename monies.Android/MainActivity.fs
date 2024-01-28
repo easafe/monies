@@ -7,9 +7,9 @@ open Avalonia.Android
 open Fabulous.Avalonia
 open monies
 
-[<Activity(Label = "monies.Android",
+[<Activity(Label = "monie$",
            Theme = "@style/MyTheme.NoActionBar",
-           Icon = "@drawable/icon",
+           Icon = "@drawable/Icon",
            LaunchMode = LaunchMode.SingleTop,
            ConfigurationChanges = (ConfigChanges.Orientation ||| ConfigChanges.ScreenSize))>]
 type MainActivity() =

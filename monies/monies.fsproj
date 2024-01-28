@@ -6,6 +6,8 @@
     <ItemGroup>
         <Compile Include="App.fs" />
         <AvaloniaResource Include="**\*.xaml" />
+        <AvaloniaResource Include="Assets\**" />
+
     </ItemGroup>
 
     <ItemGroup>
