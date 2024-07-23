@@ -12,6 +12,7 @@
 
     <ItemGroup>
         <PackageReference Include="Fabulous.Avalonia" Version="2.2.0" />
+        <PackageReference Include="Fabulous.Avalonia.ItemsRepeater" Version="2.3.0" />
         <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.6" />
     </ItemGroup>
 </Project>

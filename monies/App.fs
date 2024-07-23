@@ -5,6 +5,7 @@ open Avalonia.Themes.Fluent
 open Fabulous
 open Fabulous.Avalonia
 
+
 open type Fabulous.Avalonia.View
 
 module App =
@@ -72,11 +73,12 @@ module App =
         match budgets with
         | [] -> []
         | b :: udgets ->
-            let n = (decimal)(DateTime.Now - b.Start).Days + 1m
+            let n = (decimal) (DateTime.Now - b.Start).Days + 1m
             let r = List.sumBy (fun e -> e.Amount) b.Expenses
+
             { b with
-                Remaining = b.Max / (decimal)b.Days * n - r }
-             :: udgets
+                Remaining = b.Max / (decimal) b.Days * n - r }
+            :: udgets
 
     let update msg model =
         match msg with
@@ -89,11 +91,10 @@ module App =
                     Budgets =
                         { Max = m
                           Days = d
-                          Remaining = m / (decimal)d
+                          Remaining = m / (decimal) d
                           Start = DateTime.Now
                           Expenses = [] }
-                        :: model.Budgets }
-                    ,
+                        :: model.Budgets },
                 Cmd.none
             | _, _ -> model, Cmd.none
 
@@ -101,7 +102,7 @@ module App =
             match model.AmountInput with
             | Some a ->
                 { model with
-                    Budgets =  addExpense (a, model.TagInput) model.Budgets |> remaining
+                    Budgets = addExpense (a, model.TagInput) model.Budgets |> remaining
                     AmountInput = None
                     TagInput = None },
                 Cmd.none
@@ -127,7 +128,8 @@ module App =
         match model.Budgets with
         | [] ->
             (VStack() {
-                TextBlock("monies").centerText ()
+                // i dont know how these paths work
+                //    Image("logo_small.png", Strech.Uniform)
 
                 Label("Max budget")
                 TextBox(df model.MaxInput, SetMaxInput)
@@ -137,6 +139,25 @@ module App =
                 Button("Add", Start)
             })
         | b :: bs ->
+            let header =
+                (HStack() {
+                    Label("Spent")
+                    Label("Tag")
+                })
+
+            let entry e =
+                (HStack() {
+                    TextBlock(e.Amount.ToString())
+
+                    TextBlock(
+                        match e.Tag with
+                        | Some t -> t
+                        | None -> ""
+                    )
+                })
+
+            in
+
             (VStack() {
                 TextBlock("monies").centerText ()
 
@@ -149,7 +170,9 @@ module App =
                 Label("Tag")
                 TextBox(df model.TagInput, SetTagInput)
                 Button("Add", Spend)
+                header
 
+                ItemsRepeater(b.Expenses, entry)
             })
 
     let app model =
