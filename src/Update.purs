@@ -6,9 +6,12 @@ import Prelude
 import Data.HashMap as DH
 import Data.Int as DI
 import Data.List (List(..))
+import Data.List as DL
+import Data.Maybe (Maybe(..))
 import Data.Maybe as DM
 import Data.Number as DN
 import Data.Tuple.Nested ((/\))
+import Debug (spy)
 import Effect.Now as EN
 import Effect.Unsafe as EU
 import Model as M
@@ -17,44 +20,7 @@ update ∷ Model → Message → _
 update model = case _ of
       SetInput field value → updateInputs field value model /\ []
       StartBudget → startBudget model /\ []
-      _ → model /\ []
-
-
-{-      | Spend ->
-            match model.AmountInput with
-            | Some a ->
-                { model with
-                    Budgets = addExpense (a, model.TagInput) model.Budgets |> remaining
-                    AmountInput = None
-                    TagInput = None },
-                Cmd.none
-            | None -> model, Cmd.none
-
-
-
-              let addExpense (amount, tag) budgets =
-        match budgets with
-        | [] -> []
-        | b :: udgets ->
-            { b with
-                Expenses =
-                    { Amount = amount
-                      Tag = tag
-                      time = DateTime.Now }
-                    :: b.Expenses }
-            :: udgets
-
-    let remaining budgets =
-        match budgets with
-        | [] -> []
-        | b :: udgets ->
-            let n = (decimal) (DateTime.Now - b.Start).Days + 1m
-            let r = List.sumBy (fun e -> e.Amount) b.Expenses
-
-            { b with
-                Remaining = b.Max / (decimal) b.Days * n - r }
-            :: udgets
--}
+      Spend → spend model /\ []
 
 updateInputs ∷ String → String → Model → Model
 updateInputs field value model = model
@@ -74,7 +40,28 @@ startBudget model = model
             in
                   { max: m
                   , days: d
-                  , remaining: m / DI.toNumber d
                   , start: EU.unsafePerformEffect (EN.nowDateTime)
                   , expenses: Nil
                   }
+
+spend ∷ Model → Model
+spend model = model
+      { budgets = case model.budgets of
+              Cons budget rest → Cons (addExpense budget) rest
+              Nil → model.budgets
+      , inputs = DH.empty
+      }
+      where
+      addExpense budget =
+            let
+                  newExpense =
+                        {
+                            amount: DM.fromMaybe 0.0 $ (M.lookupInput amountInput model.inputs >>= DN.fromString)
+                            , tag : M.lookupInput tagInput model.inputs
+                            , time  : EU.unsafePerformEffect (EN.nowDateTime)
+                        }
+            in
+                  budget
+                        { expenses = Cons newExpense budget.expenses
+                        }
+
