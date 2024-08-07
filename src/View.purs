@@ -3,7 +3,9 @@ module View (view) where
 import Model
 import Prelude
 
+import Data.Date as DD
 import Data.DateTime (DateTime(..))
+import Data.DateTime as DT
 import Data.DateTime.Instant as DDI
 import Data.HashMap (HashMap)
 import Data.Int as DI
@@ -14,6 +16,8 @@ import Data.Maybe as DM
 import Data.Newtype as DNT
 import Data.Number as DN
 import Data.Symbol (class IsSymbol)
+import Data.Time.Duration (Days(..))
+import Debug (spy)
 import Effect.Now as EN
 import Effect.Unsafe as EU
 import Flame (Html)
@@ -55,7 +59,7 @@ currentBudgetForm inputs budget = FE.div_
       , FE.text $ "Todays' budget " <> show remaining
       , FE.br
       , FE.label_ "Amount"
-      , FE.input [ FA.keyboardType "numeric", FA.type' "text", FA.onInput (M.setInput @ExpenseRow amountInput), FA.value $ inputValue amountInput inputs]
+      , FE.input [ FA.keyboardType "numeric", FA.type' "text", FA.onInput (M.setInput @ExpenseRow amountInput), FA.value $ inputValue amountInput inputs ]
       , FE.label_ "Tag"
       , FE.input [ FA.type' "text", FA.onInput (M.setInput @ExpenseRow tagInput) ]
       , FE.input [ FA.type' "button", FA.disabled (not $ isNumber inputs amountInput), FA.value "Add", FA.onClick Spend ]
@@ -70,10 +74,13 @@ currentBudgetForm inputs budget = FE.div_
       ]
       where
       today = EU.unsafePerformEffect EN.nowDate
+      daysElapsed = DN.floor $ DNT.unwrap (DD.diff today (DT.date budget.start) ∷ Days)
       isToday (DateTime date _) = date == today
-      todaysExpenses = DL.filter (\e -> isToday e.time ) budget.expenses
+      todaysExpenses = DL.filter (\e → isToday e.time) budget.expenses
 
-      remaining = budget.max / DI.toNumber budget.days - DL.foldl (\c e -> c + e.amount) 0.0 todaysExpenses
+      totalExpenses = DL.foldl (\c e → c + e.amount) 0.0 budget.expenses
+      --take into account if we have any spill over from previous days
+      remaining = budget.max / DI.toNumber budget.days * (daysElapsed + 1.0) - totalExpenses
 
       showHour dt = formatTime <<< DNT.unwrap <<< DDI.unInstant $ DDI.fromDateTime dt
       listExpenses expense = FE.tr_
@@ -82,4 +89,5 @@ currentBudgetForm inputs budget = FE.div_
             , FE.td_ $ showHour expense.time
             ]
 
+inputValue ∷ ∀ p. IsSymbol p ⇒ Proxy p → HashMap String String → String
 inputValue p inputs = DM.fromMaybe "" $ M.lookupInput p inputs

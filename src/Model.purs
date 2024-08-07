@@ -1,13 +1,18 @@
 module Model where
 
+import Prelude
+
 import Data.DateTime (DateTime)
+import Data.DateTime as DT
 import Data.HashMap (HashMap)
 import Data.HashMap as DH
 import Data.HashMap as HM
 import Data.List (List(..))
-import Data.Maybe (Maybe)
+import Data.Maybe (Maybe(..))
+import Data.Maybe as DM
 import Data.Symbol (class IsSymbol)
 import Data.Symbol as DS
+import Data.Time.Duration (Days(..))
 import Effect.Now as EN
 import Effect.Unsafe as EU
 import Prim.Row (class Cons)
@@ -61,6 +66,17 @@ type Budget = Record BudgetRow
 
 init ∷ Model
 init =
-      { budgets: Cons { max: 100.0, days: 10, expenses: Nil, start: EU.unsafePerformEffect EN.nowDateTime} Nil
-      , inputs: HM.empty
-      }
+      let
+            today = EU.unsafePerformEffect EN.nowDateTime
+            yesterday = DM.fromMaybe today $ DT.adjust (Days (-1.0)) today
+            beforeYesterday = DM.fromMaybe today $ DT.adjust (Days (-2.0)) today
+      in
+            { budgets: Cons
+                    { max: 100.0
+                    , days: 10
+                    , expenses: Cons { amount: 11.0, time: beforeYesterday, tag: Nothing } (Cons { amount: 11.0, time: yesterday, tag: Nothing } Nil)
+                    , start: beforeYesterday
+                    }
+                    Nil
+            , inputs: HM.empty
+            }

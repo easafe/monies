@@ -55,10 +55,9 @@ spend model = model
       addExpense budget =
             let
                   newExpense =
-                        {
-                            amount: DM.fromMaybe 0.0 $ (M.lookupInput amountInput model.inputs >>= DN.fromString)
-                            , tag : M.lookupInput tagInput model.inputs
-                            , time  : EU.unsafePerformEffect (EN.nowDateTime)
+                        { amount: DM.fromMaybe 0.0 $ (M.lookupInput amountInput model.inputs >>= DN.fromString)
+                        , tag: M.lookupInput tagInput model.inputs
+                        , time: EU.unsafePerformEffect (EN.nowDateTime)
                         }
             in
                   budget
