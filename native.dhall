@@ -1,0 +1,1 @@
+./spago.dhall // { sources = [ "native/**/*.purs", "monies/**/*.purs" ] }

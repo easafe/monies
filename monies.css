@@ -1,0 +1,12 @@
+#app {
+    width:370px;
+    height:700px;
+    margin:0 auto;
+    border: 1px solid;
+    border-radius: 4px;
+}
+
+#app div {
+    display: flex;
+    flex-direction: column;
+}

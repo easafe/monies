@@ -12,8 +12,8 @@ to generate this file without the comments in this block.
 -}
 { name = "my-project"
 , dependencies =
-  [ "console"
-  , "datetime"
+  [ "datetime"
+  , "debug"
   , "effect"
   , "flame"
   , "integers"
@@ -27,5 +27,5 @@ to generate this file without the comments in this block.
   , "unordered-collections"
   ]
 , packages = ./packages.dhall
-, sources = [ "src/**/*.purs", "test/**/*.purs" ]
+, sources = [ "monies/**/*.purs", "test/**/*.purs" ]
 }

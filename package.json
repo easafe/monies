@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "native": "spago -x native.dhall build --watch",
+    "web": "spago -x web.dhall bundle-app --watch --to monies.js",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start"

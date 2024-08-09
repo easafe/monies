@@ -1,0 +1,1 @@
+export let logoSmall = require("../../static/image/logo_small.png");
