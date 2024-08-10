@@ -1,1 +1,1 @@
-./spago.dhall // { sources = [ "web/**/*.purs", "monies/**/*.purs" ] }
+./spago.dhall // { sources = [ "src/Web/**/*.purs", "src/Monies/**/*.purs" ] }

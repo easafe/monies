@@ -12,20 +12,26 @@ to generate this file without the comments in this block.
 -}
 { name = "my-project"
 , dependencies =
-  [ "datetime"
+  [ "aff"
+  , "datetime"
   , "debug"
   , "effect"
+  , "exceptions"
   , "flame"
+  , "foreign"
   , "integers"
   , "lists"
   , "maybe"
   , "newtype"
   , "now"
+  , "nullable"
   , "numbers"
   , "prelude"
+  , "record"
   , "tuples"
+  , "typelevel-prelude"
   , "unordered-collections"
   ]
 , packages = ./packages.dhall
-, sources = [ "monies/**/*.purs", "test/**/*.purs" ]
+, sources = [ "src/Monies/**/*.purs", "test/**/*.purs" ]
 }

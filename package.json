@@ -10,8 +10,11 @@
     "start": "react-native start"
   },
   "dependencies": {
+    "bson": "^6.8.0",
     "react": "18.2.0",
-    "react-native": "0.74.4"
+    "react-native": "0.74.4",
+    "react-native-get-random-values": "^1.11.0",
+    "react-native-mmkv": "^2.12.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

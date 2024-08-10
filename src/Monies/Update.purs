@@ -1,6 +1,6 @@
-module Update (update) where
+module Monies.Update (update) where
 
-import Model
+import Monies.Model
 import Prelude
 
 import Data.HashMap as DH
@@ -10,17 +10,20 @@ import Data.List as DL
 import Data.Maybe (Maybe(..))
 import Data.Maybe as DM
 import Data.Number as DN
-import Data.Tuple.Nested ((/\))
+import Data.Tuple.Nested (type (/\), (/\))
 import Debug (spy)
+import Effect.Aff (Aff)
+import Effect.Class as EC
 import Effect.Now as EN
 import Effect.Unsafe as EU
-import Model as M
+import Monies.Database as MB
+import Monies.Model as M
 
 update ∷ Model → Message → _
 update model = case _ of
       SetInput field value → updateInputs field value model /\ []
-      StartBudget → startBudget model /\ []
-      Spend → spend model /\ []
+      StartBudget → saveModel $ startBudget model
+      Spend → saveModel $ spend model
 
 updateInputs ∷ String → String → Model → Model
 updateInputs field value model = model
@@ -64,3 +67,5 @@ spend model = model
                         { expenses = Cons newExpense budget.expenses
                         }
 
+saveModel ∷ Model → Model /\ (Array (Aff (Maybe Message)))
+saveModel model = model /\ [ EC.liftEffect (MB.save model.budgets) >>= const (pure Nothing) ]

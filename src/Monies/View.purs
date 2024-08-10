@@ -1,6 +1,6 @@
-module View (view) where
+module Monies.View (view) where
 
-import Model
+import Monies.Model
 import Prelude
 
 import Data.Date as DD
@@ -22,7 +22,7 @@ import Effect.Now as EN
 import Effect.Unsafe as EU
 import Flame (Html)
 import Flame.Native.Attribute as FNA
-import Model as M
+import Monies.Model as M
 import Target.Attribute as TA
 import Target.Element as TE
 import Target.Resource (logoSmall)
@@ -35,26 +35,23 @@ foreign import formatFullDate ∷ Number → String
 
 styles ∷ _
 styles = TS.create
-      -- { input: { borderRadius: "5px", border: "1px solid gray", padding: "5px" }
-      -- , button: { color: "white", backgroundColor: "#008e4b", borderRadius: "5px", border: "1px solid gray", padding: "5px" }
-      -- }
       { input: { marginBottom: 10, marginTop: 5, borderWidth: 1, borderColor: "gray", borderStyle: "solid", borderRadius: 5, padding: 3 }
       , button: { fontWeight: "bold", textAlign: "center", color: "white", backgroundColor: "#008e4b", borderRadius: 5, padding: 4 }
       , container: { padding: 15 }
       , center: { alignSelf: "center" }
-      , table: {marginTop: 20}
+      , table: { marginTop: 20 }
       }
 
 view ∷ Model → Html Message
 view model = TE.div_
-      [ TE.img [TA.style styles.center, TA.src logoSmall]
+      [ TE.img [ TA.style styles.center, TA.src logoSmall ]
       , case model.budgets of
               Nil → newBudgetForm model.inputs
               Cons a _ → currentBudgetForm model.inputs a
       ]
 
 newBudgetForm ∷ HashMap String String → Html Message
-newBudgetForm inputs = TE.div [TA.style styles.container]
+newBudgetForm inputs = TE.div [ TA.style styles.container ]
       [ TE.label (TA.for "max-budget") "Max budget"
       , TE.input [ TA.id "max-budget", TA.style styles.input, TA.type' "text", FNA.keyboardType "numeric", TA.onInput (M.setInput @BudgetRow maxBudgetInput), TA.value $ inputValue maxBudgetInput inputs ]
       , TE.label (TA.for "days") "Days"
@@ -66,7 +63,7 @@ isNumber ∷ ∀ s. IsSymbol s ⇒ HashMap String String → Proxy s → Boolean
 isNumber inputs p = (M.lookupInput p inputs >>= DN.fromString) /= Nothing
 
 currentBudgetForm ∷ HashMap String String → Budget → Html Message
-currentBudgetForm inputs budget = TE.div [TA.style styles.container]
+currentBudgetForm inputs budget = TE.div [ TA.style styles.container ]
       [ TE.text $ "Remaining budget: " <> show (budget.max - totalExpenses)
       , TE.text $ "Remaining days: " <> show (budget.days - DI.ceil daysElapsed)
       , TE.text $ "Todays' budget " <> show remaining
@@ -76,10 +73,10 @@ currentBudgetForm inputs budget = TE.div [TA.style styles.container]
       , TE.label_ "Amount"
       , TE.input [ FNA.keyboardType "numeric", TA.style styles.input, TA.type' "text", TA.onInput (M.setInput @ExpenseRow amountInput), TA.value $ inputValue amountInput inputs ]
       , TE.label_ "Tag"
-      , TE.input [ TA.type' "text", TA.style styles.input, TA.onInput (M.setInput @ExpenseRow tagInput) ]
+      , TE.input [ TA.type' "text", TA.style styles.input, TA.onInput (M.setInput @ExpenseRow tagInput), TA.value $ inputValue tagInput inputs ]
       , TE.input [ TA.type' "button", TA.style styles.button, TA.disabled (not $ isNumber inputs amountInput), TA.value "Add", TA.onClick Spend ]
 
-      , TE.table [TA.style styles.table]
+      , TE.table [ TA.style styles.table ]
               ( [ TE.tr_
                         [ TE.td_ "Amount"
                         , TE.td_ "Tag"

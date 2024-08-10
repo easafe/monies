@@ -5,10 +5,10 @@ import Prelude
 import Effect (Effect)
 import Flame (AppId(..), QuerySelector(..))
 import Flame as FAN
-import View (view)
-import Update (update)
+import Monies.View (view)
+import Monies.Update (update)
 import Data.Tuple.Nested ((/\))
-import Model
+import Monies.Model (init)
 
 main ∷ Effect Unit
 main = FAN.mount (QuerySelector "#app") (AppId "monies")

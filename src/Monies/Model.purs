@@ -1,4 +1,4 @@
-module Model where
+module Monies.Model where
 
 import Prelude
 
@@ -66,17 +66,6 @@ type Budget = Record BudgetRow
 
 init ∷ Model
 init =
-      let
-            today = EU.unsafePerformEffect EN.nowDateTime
-            yesterday = DM.fromMaybe today $ DT.adjust (Days (-1.0)) today
-            beforeYesterday = DM.fromMaybe today $ DT.adjust (Days (-2.0)) today
-      in
-            { budgets: Cons
-                    { max: 100.0
-                    , days: 10
-                    , expenses: Cons { amount: 11.0, time: beforeYesterday, tag: Nothing } (Cons { amount: 11.0, time: yesterday, tag: Nothing } Nil)
-                    , start: beforeYesterday
-                    }
-                    Nil
-            , inputs: HM.empty
-            }
+      { budgets: Nil
+      , inputs: HM.empty
+      }
