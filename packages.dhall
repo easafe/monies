@@ -103,4 +103,4 @@ let upstream =
         sha256:12eb09db3da6c045daf62890376acfb910ebb9362957da1310f9d13e9ea7014f
 
 in  upstream
-    with flame = ../purescript-flame/spago.dhall as Location
+    with flame.version = "8abe58ebfc146b0857abb6bf9401268c3b177832"
