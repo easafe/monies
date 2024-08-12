@@ -38,13 +38,13 @@ styles = TS.create
       { input: { marginBottom: 10, marginTop: 5, borderWidth: 1, borderColor: "gray", borderStyle: "solid", borderRadius: 5, padding: 3 }
       , button: { fontWeight: "bold", textAlign: "center", color: "white", backgroundColor: "#008e4b", borderRadius: 5, padding: 4 }
       , container: { padding: 15 }
-      , center: { alignSelf: "center" }
+      , img: { alignSelf: "center", marginTop: 20 }
       , table: { marginTop: 20 }
       }
 
 view ∷ Model → Html Message
 view model = TE.div_
-      [ TE.img [ TA.style styles.center, TA.src logoSmall ]
+      [ TE.img [ TA.style styles.img, TA.src logoSmall ]
       , case model.budgets of
               Nil → newBudgetForm model.inputs
               Cons a _ → currentBudgetForm model.inputs a
