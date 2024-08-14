@@ -64,30 +64,34 @@ isNumber inputs p = (M.lookupInput p inputs >>= DN.fromString) /= Nothing
 
 currentBudgetForm ∷ HashMap String String → Budget → Html Message
 currentBudgetForm inputs budget = TE.div [ TA.style styles.container ]
-      [ TE.text $ "Remaining budget: " <> show (budget.max - totalExpenses)
-      , TE.text $ "Remaining days: " <> show (budget.days - DI.ceil daysElapsed)
-      , TE.text $ "Todays' budget " <> show remaining
+      if isExpired then
+            [TE.text "Budget period expired"]
+      else
+            [ TE.text $ "Remaining budget: " <> show (budget.max - totalExpenses)
+            , TE.text $ "Remaining days: " <> show (budget.days - DI.ceil daysElapsed)
+            , TE.text $ "Todays' budget " <> show remaining
 
-      , TE.br
+            , TE.br
 
-      , TE.label_ "Amount"
-      , TE.input [ FNA.keyboardType "numeric", TA.style styles.input, TA.type' "text", TA.onInput (M.setInput @ExpenseRow amountInput), TA.value $ inputValue amountInput inputs ]
-      , TE.label_ "Tag"
-      , TE.input [ TA.type' "text", TA.style styles.input, TA.onInput (M.setInput @ExpenseRow tagInput), TA.value $ inputValue tagInput inputs ]
-      , TE.input [ TA.type' "button", TA.style styles.button, TA.disabled (not $ isNumber inputs amountInput), TA.value "Add", TA.onClick Spend ]
+            , TE.label_ "Amount"
+            , TE.input [ FNA.keyboardType "numeric", TA.style styles.input, TA.type' "text", TA.onInput (M.setInput @ExpenseRow amountInput), TA.value $ inputValue amountInput inputs ]
+            , TE.label_ "Tag"
+            , TE.input [ TA.type' "text", TA.style styles.input, TA.onInput (M.setInput @ExpenseRow tagInput), TA.value $ inputValue tagInput inputs ]
+            , TE.input [ TA.type' "button", TA.style styles.button, TA.disabled (not $ isNumber inputs amountInput), TA.value "Add", TA.onClick Spend ]
 
-      , TE.table [ TA.style styles.table ]
-              ( [ TE.tr_
-                        [ TE.td_ "Amount"
-                        , TE.td_ "Tag"
-                        , TE.td_ "Time"
-                        ]
-                ] <> DL.toUnfoldable (map listExpenses todaysExpenses)
-              )
-      ]
+            , TE.table [ TA.style styles.table ]
+                  ( [ TE.tr_
+                              [ TE.td_ "Amount"
+                              , TE.td_ "Tag"
+                              , TE.td_ "Time"
+                              ]
+                  ] <> DL.toUnfoldable (map listExpenses todaysExpenses)
+                  )
+            ]
       where
       today = EU.unsafePerformEffect EN.nowDate
       daysElapsed = DN.floor $ DNT.unwrap (DD.diff today (DT.date budget.start) ∷ Days)
+      isExpired = DI.trunc daysElapsed > budget.days
       isToday (DateTime date _) = date == today
       todaysExpenses = DL.filter (\e → isToday e.time) budget.expenses
 
